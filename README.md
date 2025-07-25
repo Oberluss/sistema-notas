@@ -1,208 +1,252 @@
-# Sistema de Notas con JSON
+# 📝 Sistema de Notas
 
-## 🚀 Conversión de MySQL a JSON
+Un sistema web simple y eficiente para gestionar notas personales, sin necesidad de base de datos MySQL. Utiliza archivos JSON para almacenar toda la información.
 
-Este sistema ha sido convertido para usar archivos JSON en lugar de base de datos MySQL. Todos los datos se almacenan en la carpeta `/data` de forma segura.
+## 🌟 Características Principales
 
-## 📁 Estructura de archivos
+- **Sin Base de Datos MySQL**: Utiliza archivos JSON para almacenar datos
+- **Instalación Automática**: Setup en 5 pasos simples
+- **Interfaz Moderna**: Diseño responsive y atractivo
+- **Búsqueda Integrada**: Encuentra tus notas rápidamente
+- **Backups Automáticos**: Crea copias de seguridad automáticamente
+- **Sistema de Usuarios**: Gestión de usuarios con roles (opcional)
+- **Estadísticas**: Visualiza el total de notas y vistas
+- **Totalmente en Español**: Interfaz completamente en español
+
+## 📋 Requisitos del Sistema
+
+- **PHP 7.0** o superior
+- **Extensión JSON** habilitada
+- **Extensión cURL** habilitada (opcional pero recomendada)
+- **Permisos de escritura** en el directorio de instalación
+- **allow_url_fopen** habilitado
+
+## 🚀 Instalación Rápida
+
+### Opción 1: Instalación Automática (Recomendada)
+
+1. Descarga el archivo `setup.php` del repositorio
+2. Súbelo a tu servidor web
+3. Accede desde tu navegador: `http://tudominio.com/setup.php`
+4. Sigue los 5 pasos del instalador:
+   - **Paso 1**: Verificación de requisitos
+   - **Paso 2**: Configuración del sistema
+   - **Paso 3**: Preparación de archivos
+   - **Paso 4**: Instalación
+   - **Paso 5**: Finalización
+5. ¡Listo! Tu sistema de notas está instalado
+
+### Opción 2: Instalación Manual
+
+1. Clona o descarga el repositorio:
+   ```bash
+   git clone https://github.com/Oberluss/sistema-notas.git
+   ```
+
+2. Sube los archivos a tu servidor
+
+3. Crea las siguientes carpetas con permisos 755:
+   ```
+   /data/
+   /data/backup/
+   /assets/css/
+   /assets/js/
+   /assets/images/
+   /admin/
+   ```
+
+4. Crea el archivo `data/database.json` con la estructura inicial:
+   ```json
+   {
+     "users": [{
+       "id": 1,
+       "username": "admin",
+       "password": "$2y$10$...",
+       "email": "admin@example.com",
+       "role": "admin",
+       "created_at": "2024-01-01 00:00:00"
+     }],
+     "notes": [],
+     "settings": {
+       "site_name": "Sistema de Notas",
+       "version": "2.0",
+       "timezone": "America/Lima"
+     }
+   }
+   ```
+
+## 📖 Uso del Sistema
+
+### Acceso Principal
+- URL principal: `http://tudominio.com/`
+- Panel de administración: `http://tudominio.com/admin/`
+
+### Funciones Básicas
+
+1. **Crear una nota**:
+   - Haz clic en "+ Nueva Nota"
+   - Ingresa título y contenido
+   - Guarda la nota
+
+2. **Buscar notas**:
+   - Usa la barra de búsqueda
+   - Busca por título o contenido
+
+3. **Editar/Eliminar**:
+   - Cada nota tiene opciones para editar o eliminar
+   - Confirma antes de eliminar
+
+### Gestión de Usuarios (Opcional)
+
+Si habilitaste el sistema de usuarios durante la instalación:
+- Accede al panel admin con tus credenciales
+- Crea nuevos usuarios
+- Gestiona permisos
+
+## 📁 Estructura de Archivos
 
 ```
 sistema-notas/
-├── data/                    # Carpeta de datos (se crea automáticamente)
-│   ├── .htaccess           # Protección de la carpeta
-│   ├── database.json       # Base de datos principal
-│   ├── backup/             # Copias de seguridad automáticas
-│   └── uploads/            # Archivos subidos
-├── admin/                  # Panel de administración (existente)
-├── assets/                 # Recursos (CSS, JS, imágenes)
-├── conexion.php           # ✅ MODIFICADO - Gestor de datos JSON
-├── check-session.php      # ✅ MODIFICADO - Verificación de sesión
-├── crear_nota.php         # ✅ MODIFICADO - Formulario de creación
-├── guardar_nota.php       # ✅ MODIFICADO - Guardar notas
-├── editarnota.php         # ✅ MODIFICADO - Editar notas
-├── eliminar_nota.php      # ✅ MODIFICADO - Eliminar notas
-├── vernota.php            # ✅ MODIFICADO - Ver nota individual
-├── index.php              # ✅ MODIFICADO - Listado principal
-└── README.md              # Este archivo
+├── index.php              # Página principal
+├── conexion.php           # Sistema de gestión JSON
+├── check-session.php      # Control de sesiones
+├── crear_nota.php         # Formulario nueva nota
+├── guardar_nota.php       # Procesa guardado
+├── vernota.php           # Vista individual
+├── editarnota.php        # Editar nota
+├── eliminar_nota.php     # Eliminar nota
+├── .htaccess             # Configuración Apache
+├── data/                 # Datos del sistema
+│   ├── database.json     # Base de datos principal
+│   ├── backup/           # Copias de seguridad
+│   └── .htaccess         # Protección
+├── assets/               # Recursos
+│   ├── css/              # Estilos
+│   ├── js/               # JavaScript
+│   └── images/           # Imágenes
+└── admin/                # Panel administración
 ```
 
-## 🔧 Instalación
+## 🎨 Personalización
 
-### 1. Requisitos
-- PHP 7.0 o superior
-- Servidor web (Apache/Nginx)
-- Permisos de escritura en el servidor
+### Cambiar el Nombre del Sitio
 
-### 2. Pasos de instalación
+1. Edita `data/database.json`
+2. Busca `"site_name": "Sistema de Notas"`
+3. Cambia el valor por el nombre deseado
 
-1. **Subir los archivos** al servidor
-2. **Dar permisos de escritura** a la carpeta raíz:
-   ```bash
-   chmod 755 .
-   chmod -R 777 data/  # Se creará automáticamente
-   ```
+### Modificar Estilos
 
-3. **Acceder al sistema** desde el navegador:
-   ```
-   http://tudominio.com/
-   ```
+Los estilos están en `assets/css/style.css`. Puedes modificar:
+- Colores principales
+- Tamaños de fuente
+- Espaciados
+- Diseño responsive
 
-4. **¡Listo!** El sistema creará automáticamente:
-   - La carpeta `/data`
-   - El archivo `database.json` con datos iniciales
-   - Las carpetas de backup y uploads
-   - El archivo `.htaccess` de protección
+### Zona Horaria
 
-## 📝 Uso del sistema
-
-### Crear una nota
-1. Click en "Nueva Nota" desde la página principal
-2. Escribir título y contenido
-3. Click en "Guardar Nota"
-
-### Editar una nota
-1. Click en una nota para verla
-2. Click en "Editar"
-3. Modificar y guardar
-
-### Eliminar una nota
-1. Click en "Eliminar" desde el listado o vista de nota
-2. Confirmar la eliminación
-
-### Buscar notas
-- Usar el buscador en la página principal
-- Busca en títulos y contenido
-
-## 🔐 Seguridad
-
-### Protección de datos
-- La carpeta `/data` está protegida con `.htaccess`
-- Los archivos JSON no son accesibles desde el navegador
-- Se crean backups automáticos antes de cada modificación
-
-### Sin necesidad de MySQL
-- ✅ No requiere configuración de base de datos
-- ✅ No hay riesgos de inyección SQL
-- ✅ Portabilidad total (solo copiar archivos)
-
-## 💾 Estructura de datos
-
-### database.json
-```json
-{
-    "users": [
-        {
-            "id": 1,
-            "username": "admin",
-            "password": "$2y$10$...",
-            "email": "admin@example.com"
-        }
-    ],
-    "notes": [
-        {
-            "id": "1234567890_abc123",
-            "title": "Mi primera nota",
-            "content": "Contenido de la nota...",
-            "user_id": 1,
-            "views": 42,
-            "created_at": "2024-01-15 10:30:00",
-            "updated_at": "2024-01-15 14:45:00"
-        }
-    ],
-    "settings": {
-        "site_name": "Sistema de Notas",
-        "version": "2.0"
-    }
-}
-```
-
-## 🔄 Backups
-
-### Automáticos
-- Se crea un backup antes de cada modificación
-- Se mantienen los últimos 10 backups
-- Ubicación: `/data/backup/`
-
-### Manuales
-Para hacer un backup manual:
-1. Copiar el archivo `/data/database.json`
-2. Guardarlo en un lugar seguro
-
-### Restaurar backup
-1. Ir a la carpeta `/data/backup/`
-2. Elegir el archivo de backup deseado
-3. Copiarlo y renombrarlo como `database.json`
-4. Reemplazar el archivo actual en `/data/`
-
-## ⚙️ Configuración
-
-### Cambiar configuración del sistema
-Editar el archivo `conexion.php`:
-
+Para cambiar la zona horaria, edita `check-session.php`:
 ```php
-// Número de backups a mantener
-$maxBackups = 10;
-
-// Notas por página
-$notesPerPage = 10;
+date_default_timezone_set('America/Lima');
 ```
 
-### Habilitar/deshabilitar login
-En `check-session.php`:
+## 🔧 Configuración Avanzada
 
+### Habilitar Login Obligatorio
+
+En `check-session.php`, cambia:
 ```php
-define('REQUIRE_LOGIN', false); // true para requerir login
+define('REQUIRE_LOGIN', true);
 ```
 
-## 🚨 Solución de problemas
+### Límite de Notas por Página
 
-### "No se puede crear la carpeta data"
+En `index.php`, modifica:
+```php
+$per_page = 10; // Cambia este valor
+```
+
+### Backups Automáticos
+
+El sistema mantiene las últimas 10 copias de seguridad. Para cambiar este límite, edita `conexion.php`:
+```php
+if (count($files) > 10) { // Cambia el 10
+```
+
+## 🛠️ Solución de Problemas
+
+### Error: "Requisitos no cumplidos"
+- Verifica que tu servidor tenga PHP 7.0+
+- Asegúrate que las extensiones JSON y cURL estén habilitadas
+- Contacta a tu proveedor de hosting
+
+### Error: "Sin permisos de escritura"
 ```bash
-# Dar permisos al directorio
-sudo chown -R www-data:www-data .
-sudo chmod -R 755 .
+chmod 755 /ruta/a/tu/sitio
+chmod -R 755 data/
 ```
 
-### "No se guardan las notas"
-1. Verificar permisos de la carpeta `/data`
-2. Verificar que PHP tenga permisos de escritura
-3. Revisar logs del servidor
+### No puedo eliminar setup.php
+- Elimínalo manualmente vía FTP
+- O usa el administrador de archivos de tu hosting
 
-### "Perdí mis datos"
-1. Revisar la carpeta `/data/backup/`
-2. Buscar el backup más reciente
-3. Restaurar según instrucciones anteriores
+### Las notas no se guardan
+- Verifica permisos en la carpeta `data/`
+- Asegúrate que `data/database.json` existe
+- Revisa que no esté corrupto el archivo JSON
 
-## 🎯 Ventajas del sistema JSON
+## 🔒 Seguridad
 
-1. **Sin base de datos**: No requiere MySQL/MariaDB
-2. **Portabilidad**: Solo copiar archivos para migrar
-3. **Simplicidad**: Fácil de entender y mantener
-4. **Backups fáciles**: Solo copiar archivos JSON
-5. **Sin configuración**: Funciona inmediatamente
-6. **Seguridad**: Sin riesgos de inyección SQL
+- **Elimina setup.php** después de la instalación
+- La carpeta `data/` está protegida con `.htaccess`
+- Las contraseñas se almacenan encriptadas
+- No se permite acceso directo a archivos JSON
 
-## 📱 Características
+## 📱 Compatibilidad
 
-- ✅ Crear, editar y eliminar notas
-- ✅ Búsqueda de notas
-- ✅ Contador de vistas
-- ✅ Paginación
-- ✅ Backups automáticos
-- ✅ Responsive (móviles y tablets)
-- ✅ Sin necesidad de base de datos
-- ✅ Instalación en 1 minuto
+- ✅ Chrome, Firefox, Safari, Edge
+- ✅ Diseño responsive para móviles
+- ✅ Tablets y escritorio
+- ✅ PHP 7.0, 7.4, 8.0, 8.1, 8.2
 
-## 🤝 Soporte
+## 🤝 Contribuir
 
-Si necesitas ayuda:
-1. Revisa este README
-2. Verifica los permisos de archivos
-3. Revisa los logs del servidor
-4. Contacta al desarrollador
+Las contribuciones son bienvenidas:
+
+1. Fork el proyecto
+2. Crea tu rama de características (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## 📝 Changelog
+
+### Versión 2.0 (Actual)
+- Sistema completo sin MySQL
+- Instalador automático
+- Backups automáticos
+- Búsqueda mejorada
+- Diseño responsive moderno
+
+### Versión 1.0
+- Sistema básico con MySQL
+- Funciones CRUD básicas
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+
+## 👨‍💻 Autor
+
+- **GitHub**: [@Oberluss](https://github.com/Oberluss)
+- **Proyecto**: [sistema-notas](https://github.com/Oberluss/sistema-notas)
+
+## 🙏 Agradecimientos
+
+- A todos los que han probado y mejorado el sistema
+- A la comunidad de PHP por su excelente documentación
+- A los usuarios que reportan bugs y sugieren mejoras
 
 ---
 
-**Versión**: 2.0 (JSON)  
-**Actualizado**: Enero 2024  
-**Sin MySQL**: ✅ Completamente basado en archivos JSON
+**¿Necesitas ayuda?** Abre un issue en GitHub o contacta al autor.
