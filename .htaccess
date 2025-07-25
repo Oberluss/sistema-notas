@@ -1,0 +1,133 @@
+# Sistema de Notas - Configuración Apache
+# Archivo: .htaccess
+
+# Activar RewriteEngine
+RewriteEngine On
+
+# Configuración de seguridad
+Options -Indexes
+Options -MultiViews
+
+# Proteger archivos sensibles
+<FilesMatch "\.(json|log|md|lock|gitignore)$">
+    Order deny,allow
+    Deny from all
+</FilesMatch>
+
+# Proteger archivos de configuración
+<FilesMatch "^(conexion|check-session|migrate_to_json)\.php$">
+    Order allow,deny
+    Allow from all
+</FilesMatch>
+
+# Proteger carpeta data completamente
+RewriteRule ^data/ - [F,L]
+
+# Prevenir acceso directo a archivos PHP de procesamiento
+<FilesMatch "^(guardar_nota|eliminar_nota)\.php$">
+    Order deny,allow
+    Deny from all
+    Allow from 127.0.0.1
+    Allow from ::1
+    
+    # Permitir solo peticiones POST
+    <LimitExcept POST>
+        Order deny,allow
+        Deny from all
+    </LimitExcept>
+</FilesMatch>
+
+# URLs amigables (opcional)
+# Descomentar si quieres URLs como: /nota/123 en lugar de vernota.php?id=123
+# RewriteRule ^nota/([0-9a-zA-Z_-]+)/?$ vernota.php?id=$1 [L,QSA]
+# RewriteRule ^editar/([0-9a-zA-Z_-]+)/?$ editarnota.php?id=$1 [L,QSA]
+# RewriteRule ^nueva/?$ crear_nota.php [L]
+# RewriteRule ^buscar/?$ index.php?search=$1 [L,QSA]
+
+# Comprensión GZIP
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/css text/javascript application/javascript application/json
+</IfModule>
+
+# Cache de navegador
+<IfModule mod_expires.c>
+    ExpiresActive On
+    
+    # Imágenes - 1 mes
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType image/x-icon "access plus 1 year"
+    
+    # CSS y JavaScript - 1 semana
+    ExpiresByType text/css "access plus 1 week"
+    ExpiresByType application/javascript "access plus 1 week"
+    
+    # HTML - Sin cache
+    ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+# Headers de seguridad
+<IfModule mod_headers.c>
+    # Prevenir Clickjacking
+    Header set X-Frame-Options "SAMEORIGIN"
+    
+    # Prevenir XSS
+    Header set X-XSS-Protection "1; mode=block"
+    
+    # Prevenir MIME type sniffing
+    Header set X-Content-Type-Options "nosniff"
+    
+    # Referrer Policy
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Content Security Policy básica
+    # Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"
+</IfModule>
+
+# Manejo de errores personalizado
+ErrorDocument 403 /error/403.html
+ErrorDocument 404 /error/404.html
+ErrorDocument 500 /error/500.html
+
+# Charset UTF-8
+AddDefaultCharset UTF-8
+
+# PHP - Configuración adicional
+<IfModule mod_php7.c>
+    # Límites de upload
+    php_value upload_max_filesize 10M
+    php_value post_max_size 10M
+    php_value max_execution_time 300
+    php_value max_input_time 300
+    
+    # Seguridad
+    php_flag display_errors Off
+    php_flag log_errors On
+    php_value error_log logs/php_errors.log
+</IfModule>
+
+# Denegar acceso a archivos ocultos (empiezan con punto)
+<FilesMatch "^\.">
+    Order deny,allow
+    Deny from all
+</FilesMatch>
+
+# Proteger este archivo .htaccess
+<Files .htaccess>
+    Order deny,allow
+    Deny from all
+</Files>
+
+# Redirección a HTTPS (descomentar si tienes SSL)
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+
+# Prevenir hotlinking de imágenes (opcional)
+# RewriteCond %{HTTP_REFERER} !^$
+# RewriteCond %{HTTP_REFERER} !^https?://(www\.)?tudominio\.com [NC]
+# RewriteRule \.(jpg|jpeg|png|gif|webp)$ - [F,L]
+
+# Fin del archivo
